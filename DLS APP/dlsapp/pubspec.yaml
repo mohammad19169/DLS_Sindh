@@ -1,0 +1,43 @@
+name: dlsapp
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.2
+  fluttertoast: ^8.2.12
+  cloud_firestore: ^5.6.6
+  intl: ^0.20.2
+  pdf: ^3.11.3
+  printing: ^5.14.2
+  qr_flutter: ^4.1.0
+  firebase_storage: ^12.4.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.3
+
+# App icon configuration (must be at root level)
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/dlslogo.jpg"
+  adaptive_icon_background: "#FFFDE7"
+  # Remove if not using separate foreground:
+  # adaptive_icon_foreground: "assets/icon/icon_foreground.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icon/dlslogo.jpg
+    - assets/images/govlogo.png

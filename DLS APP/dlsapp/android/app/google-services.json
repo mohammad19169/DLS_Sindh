@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "308100949160",
+    "project_id": "dlsapp-ed220",
+    "storage_bucket": "dlsapp-ed220.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:308100949160:android:b69a086ca28957cb5c8e9d",
+        "android_client_info": {
+          "package_name": "com.example.dlsapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqb3G__JrOyHwSdWQEastyWyw_6jmCcFk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

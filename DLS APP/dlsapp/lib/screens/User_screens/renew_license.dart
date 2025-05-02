@@ -167,72 +167,133 @@ class _LicenseRenewalRequestScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('License Renewal Request'),
-        centerTitle: true,
+    return Theme(
+      data: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color(0xFF6A1B9A),
+          primary: Color(0xFF6A1B9A),
+          secondary: Color(0xFFF3E5F5),
+          surface: Color(0xFFFFFDE7),
+        ),
+        scaffoldBackgroundColor: Color(0xFFFFFDE7),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Color(0xFF6A1B9A),
+          foregroundColor: Colors.white,
+        ),
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(color: Colors.black87),
+          bodyMedium: TextStyle(color: Colors.black54),
+        ),
+        useMaterial3: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'License Renewal',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('License Renewal Request'),
+          centerTitle: true,
+          elevation: 0,
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            color: Color(0xFFFFFDE7),
+            image: DecorationImage(
+              image: AssetImage('assets/images/license_bg.png'),
+              opacity: 0.05,
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Card(
+                    elevation: 0,
+                    color: Color(0xFFF3E5F5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
                     ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Fill the form to request license renewal',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Colors.grey[600],
+                    margin: EdgeInsets.only(bottom: 24),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.refresh,
+                                color: Color(0xFF6A1B9A),
+                                size: 28,
+                              ),
+                              SizedBox(width: 12),
+                              Text(
+                                'License Renewal',
+                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF6A1B9A),
+                                    ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Fill the form to request license renewal',
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: Colors.black54,
+                                ),
+                          ),
+                        ],
+                      ),
                     ),
+                  ),
+                  _buildFormField(
+                    controller: _nameController,
+                    label: 'Full Name',
+                    icon: Icons.person,
+                    validator: (value) => value?.isEmpty ?? true ? 'Please enter your full name' : null,
+                  ),
+                  SizedBox(height: 16),
+                  _buildFormField(
+                    controller: _cnicController,
+                    label: 'CNIC (without dashes)',
+                    icon: Icons.credit_card,
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value?.isEmpty ?? true) return 'Please enter your CNIC';
+                      if (value!.length != 13) return 'CNIC must be 13 digits';
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  _buildFormField(
+                    controller: _licenseNumberController,
+                    label: 'License Number',
+                    icon: Icons.badge,
+                    validator: (value) => value?.isEmpty ?? true ? 'Please enter your license number' : null,
+                  ),
+                  SizedBox(height: 16),
+                  _buildDateField(
+                    context: context,
+                    controller: _issueDateController,
+                    label: 'Issue Date',
+                    icon: Icons.event,
+                    validator: (value) => value?.isEmpty ?? true ? 'Please select issue date' : null,
+                  ),
+                  SizedBox(height: 16),
+                  _buildDateField(
+                    context: context,
+                    controller: _expiryDateController,
+                    label: 'Expiry Date',
+                    icon: Icons.event_busy,
+                    validator: (value) => value?.isEmpty ?? true ? 'Please select expiry date' : null,
+                  ),
+                  SizedBox(height: 32),
+                  _buildSubmitButton(),
+                ],
               ),
-              SizedBox(height: 24),
-              _buildTextField(
-                controller: _nameController,
-                label: 'Full Name',
-                validator: (value) => value?.isEmpty ?? true ? 'Please enter your full name' : null,
-              ),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _cnicController,
-                label: 'CNIC (without dashes)',
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value?.isEmpty ?? true) return 'Please enter your CNIC';
-                  if (value!.length != 13) return 'CNIC must be 13 digits';
-                  return null;
-                },
-              ),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _licenseNumberController,
-                label: 'License Number',
-                validator: (value) => value?.isEmpty ?? true ? 'Please enter your license number' : null,
-              ),
-              SizedBox(height: 16),
-              _buildDateField(
-                context: context,
-                controller: _issueDateController,
-                label: 'Issue Date',
-                validator: (value) => value?.isEmpty ?? true ? 'Please select issue date' : null,
-              ),
-              SizedBox(height: 16),
-              _buildDateField(
-                context: context,
-                controller: _expiryDateController,
-                label: 'Expiry Date',
-                validator: (value) => value?.isEmpty ?? true ? 'Please select expiry date' : null,
-              ),
-              SizedBox(height: 32),
-              _buildSubmitButton(),
-            ],
+            ),
           ),
         ),
       ),
@@ -240,51 +301,111 @@ class _LicenseRenewalRequestScreenState
   }
 
   Widget _buildSubmitButton() {
-    return SizedBox(
+    return Container(
       width: double.infinity,
+      height: 54,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFF6A1B9A).withOpacity(0.3),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
       child: ElevatedButton(
         onPressed: _isLoading ? null : _submitRenewalRequest,
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 16),
+          backgroundColor: Color(0xFF6A1B9A),
+          foregroundColor: Colors.white,
+          elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
         child: _isLoading
             ? SizedBox(
-                height: 20,
-                width: 20,
+                height: 24,
+                width: 24,
                 child: CircularProgressIndicator(
-                  strokeWidth: 2,
+                  strokeWidth: 2.5,
                   color: Colors.white,
                 ),
               )
-            : Text(
-                'SUBMIT REQUEST',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.send),
+                  SizedBox(width: 8),
+                  Text(
+                    'SUBMIT REQUEST',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                ],
               ),
       ),
     );
   }
 
-  Widget _buildTextField({
+  Widget _buildFormField({
     required TextEditingController controller,
     required String label,
+    required IconData icon,
     String? Function(String?)? validator,
     TextInputType? keyboardType,
   }) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
-      validator: validator,
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(
+            color: Colors.black54,
+            fontWeight: FontWeight.w500,
+          ),
+          prefixIcon: Icon(
+            icon,
+            color: Color(0xFF6A1B9A),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Color(0xFF6A1B9A), width: 1.5),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.red.shade300),
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          fillColor: Colors.white,
+          filled: true,
+        ),
+        validator: validator,
+      ),
     );
   }
 
@@ -292,19 +413,61 @@ class _LicenseRenewalRequestScreenState
     required BuildContext context,
     required TextEditingController controller,
     required String label,
+    required IconData icon,
     String? Function(String?)? validator,
   }) {
-    return TextFormField(
-      controller: controller,
-      readOnly: true,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        suffixIcon: Icon(Icons.calendar_today),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
-      onTap: () => _selectDate(context, controller),
-      validator: validator,
+      child: TextFormField(
+        controller: controller,
+        readOnly: true,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(
+            color: Colors.black54,
+            fontWeight: FontWeight.w500,
+          ),
+          prefixIcon: Icon(
+            icon,
+            color: Color(0xFF6A1B9A),
+          ),
+          suffixIcon: Icon(
+            Icons.calendar_today,
+            color: Color(0xFF6A1B9A),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Color(0xFF6A1B9A), width: 1.5),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.red.shade300),
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          fillColor: Colors.white,
+          filled: true,
+        ),
+        onTap: () => _selectDate(context, controller),
+        validator: validator,
+      ),
     );
   }
 

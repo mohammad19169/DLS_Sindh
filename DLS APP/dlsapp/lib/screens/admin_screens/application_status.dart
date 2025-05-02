@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ApplicationStatus extends StatefulWidget {
+  const ApplicationStatus({super.key});
+
   @override
   _ApplicationStatusState createState() => _ApplicationStatusState();
 }

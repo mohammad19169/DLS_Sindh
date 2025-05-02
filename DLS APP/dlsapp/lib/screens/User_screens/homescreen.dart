@@ -29,90 +29,100 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _buildWelcomeCard(context),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.45, // Reduced height for grid
-              child: GridView.count(
-                crossAxisCount: 2,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 1.0,
-                children: [
-                  _buildDashboardCard(
-                    context,
-                    Icons.calendar_today,
-                    'Book\nAppointment',
-                    const Color(0xFF6A1B9A),
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>BookAppointmentScreen()));
-                    },
-                  ),
-                  _buildDashboardCard(
-                    context,
-                    Icons.assignment,
-                    'Application\nStatus',
-                    const Color(0xFFAB47BC),
-                    onTap: () {
-                      Navigator.push(context,MaterialPageRoute(builder:(context)=>AppointmentStatusScreen()));
-                    },
-                  ),
-                  _buildDashboardCard(
-                    context,
-                    Icons.verified_user,
-                    'Verify\nLicense',
-                    const Color(0xFF7E57C2),
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>VerifyLicenseScreen()));
-                    },
-                  ),
-                  _buildDashboardCard(
-                    context,
-                    Icons.autorenew,
-                    'Renew\nLicense',
-                    const Color(0xFF9575CD),
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>LicenseRenewalRequestScreen()));
-                    },
-                  ),
-                ],
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              _buildWelcomeCard(context),
+              const SizedBox(height: 16),
+              Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: GridView.count(
+                        crossAxisCount: 2,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        childAspectRatio: 1.1, // Slightly adjusted for better spacing
+                        children: [
+                          _buildDashboardCard(
+                            context,
+                            Icons.calendar_month, // Updated more modern calendar icon
+                            'Book\nAppointment',
+                            const Color(0xFF6A1B9A),
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>BookAppointmentScreen()));
+                            },
+                          ),
+                          _buildDashboardCard(
+                            context,
+                            Icons.pending_actions, // Better represents application status
+                            'Application\nStatus',
+                            const Color(0xFFAB47BC),
+                            onTap: () {
+                              Navigator.push(context,MaterialPageRoute(builder:(context)=>AppointmentStatusScreen()));
+                            },
+                          ),
+                          _buildDashboardCard(
+                            context,
+                            Icons.how_to_reg, // Better represents verification
+                            'Verify\nLicense',
+                            const Color(0xFF7E57C2),
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>VerifyLicenseScreen()));
+                            },
+                          ),
+                          _buildDashboardCard(
+                            context,
+                            Icons.loop, // Better icon for renewal
+                            'Renew\nLicense',
+                            const Color(0xFF9575CD),
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>LicenseRenewalRequestScreen()));
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      flex: 1,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _buildDashboardCard(
+                              context,
+                              Icons.support_agent, // Better support icon
+                              'Support/Help',
+                              const Color(0xFF6A1B9A),
+                              onTap: () {
+                                Navigator.push(context,MaterialPageRoute(builder: (context) => SupportScreen(),));
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildDashboardCard(
+                              context,
+                              Icons.receipt_long, // Better fee structure icon
+                              'Fee Structure',
+                              const Color(0xFFAB47BC),
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>FeeStructureScreen()));
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildDashboardCard(
-                    context,
-                    Icons.help_outline,
-                    'Support/Help',
-                    const Color(0xFF6A1B9A),
-                    onTap: () {
-                      Navigator.push(context,MaterialPageRoute(builder: (context) => SupportScreen(),));
-                    },
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _buildDashboardCard(
-                    context,
-                    Icons.attach_money,
-                    'Fee Structure',
-                    const Color(0xFFAB47BC),
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>FeeStructureScreen()));
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16), // Added bottom margin
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -143,14 +153,17 @@ class HomeScreen extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.directions_car, color: Colors.white, size: 32),
+                const Icon(Icons.drive_eta, color: Colors.white, size: 32), // Updated car icon
                 const SizedBox(width: 10),
-                const Text(
-                  'Welcome!',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                const Flexible(
+                  child: Text(
+                    'Welcome!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -158,7 +171,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Row(
               children: [
-                const Icon(Icons.calendar_today, color: Colors.white70, size: 24),
+                const Icon(Icons.event_available, color: Colors.white70, size: 24), // Updated icon
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -167,6 +180,8 @@ class HomeScreen extends StatelessWidget {
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 16,
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                 ),
               ],
@@ -183,6 +198,8 @@ class HomeScreen extends StatelessWidget {
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 16,
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                 ),
               ],
@@ -225,7 +242,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                size: 36, // Reduced icon size
+                size: 36,
                 color: Colors.white,
               ),
               const SizedBox(height: 12),
@@ -235,10 +252,12 @@ class HomeScreen extends StatelessWidget {
                   title,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 16, // Reduced font size
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                 ),
               ),
             ],

@@ -335,51 +335,88 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Book Driving Test Appointment'),
-        centerTitle: true,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.blue.shade800, Colors.blue.shade600],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
+        title: const Text(
+          'Book Driving Test Appointment',
+          style: TextStyle(fontWeight: FontWeight.w600),
         ),
+        centerTitle: true,
+        elevation: 2,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Colors.white,
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue.shade50, Colors.white],
-          ),
-        ),
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
+              // Header with Icon
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                      child: Icon(
+                        Icons.calendar_month,
+                        size: 36,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Schedule Your Test',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        Text(
+                          'Book your driving license test appointment',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
+              ),
+              
+              // Main Card
+              Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                shadowColor: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                color: Theme.of(context).colorScheme.surface,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(22.0),
                   child: Column(
                     children: [
-                      const Text(
-                        'Appointment Form',
+                      Text(
+                        'Appointment Details',
                         style: TextStyle(
-                          fontSize: 22,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const Divider(),
-                      const SizedBox(height: 16),
+                      Container(
+                        height: 4,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
                       Form(
                         key: _formKey,
                         child: Column(
@@ -387,15 +424,14 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                             _buildInputField(
                               controller: _nameController,
                               label: 'Full Name',
-                              icon: Icons.person_outline,
-                              validator: (value) =>
-                                  value == null || value.isEmpty ? 'Please enter your full name' : null,
+                              icon: Icons.person,
+                              validator: (value) => value == null || value.isEmpty ? 'Please enter your full name' : null,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 18),
                             _buildInputField(
                               controller: _cnicController,
                               label: 'CNIC Number',
-                              icon: Icons.credit_card_outlined,
+                              icon: Icons.credit_card,
                               hintText: '13 digits without dashes',
                               keyboardType: TextInputType.number,
                               validator: (value) {
@@ -406,11 +442,11 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                 return null;
                               },
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 18),
                             _buildInputField(
                               controller: _phoneController,
                               label: 'Phone Number',
-                              icon: Icons.phone_android_outlined,
+                              icon: Icons.phone_android,
                               hintText: '03XX-XXXXXXX',
                               keyboardType: TextInputType.phone,
                               validator: (value) {
@@ -421,30 +457,58 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                 return null;
                               },
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 24),
+                            
+                            // Section divider
+                            Row(
+                              children: [
+                                Icon(Icons.location_on, color: Theme.of(context).colorScheme.primary, size: 20),
+                                const SizedBox(width: 6),
+                                Text(
+                                  'Test Location & Time',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Divider(color: Theme.of(context).colorScheme.primary.withOpacity(0.3), thickness: 1),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            
                             _buildDropdownField(
                               value: _selectedTestCenter,
                               items: _testCenters,
-                              label: 'Select Test Center',
-                              icon: Icons.location_on_outlined,
+                              label: 'Test Center Location',
+                              icon: Icons.place,
                               onChanged: (value) => setState(() => _selectedTestCenter = value),
                               validator: (value) => value == null ? 'Please select test center' : null,
                             ),
-                            const SizedBox(height: 16),
-                            _buildInputField(
-                              controller: _dateController,
-                              label: 'Select Date',
-                              icon: Icons.calendar_today_outlined,
-                              readOnly: true,
-                              onTap: () => _selectDate(context),
-                              validator: (value) => value == null || value.isEmpty ? 'Please select date' : null,
+                            const SizedBox(height: 18),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildInputField(
+                                    controller: _dateController,
+                                    label: 'Appointment Date',
+                                    icon: Icons.event,
+                                    readOnly: true,
+                                    onTap: () => _selectDate(context),
+                                    validator: (value) => value == null || value.isEmpty ? 'Please select date' : null,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 18),
                             _buildDropdownField(
                               value: _selectedTimeSlot,
                               items: _timeSlots,
-                              label: 'Select Time Slot',
-                              icon: Icons.access_time_outlined,
+                              label: 'Preferred Time Slot',
+                              icon: Icons.access_time,
                               onChanged: (value) => setState(() => _selectedTimeSlot = value),
                               validator: (value) => value == null ? 'Please select time slot' : null,
                             ),
@@ -455,27 +519,66 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _submitAppointment,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade800,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 4,
-                    shadowColor: Colors.blue.shade200,
+              
+              // Information card
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 1),
                   ),
-                  child: const Text(
-                    'BOOK APPOINTMENT',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
+                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.4),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.info_outline, color: Theme.of(context).colorScheme.primary),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Please arrive 30 minutes before your appointment with your original CNIC and proof of address.',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              
+              // Submit button
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 24),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: _submitAppointment,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      elevation: 3,
+                      shadowColor: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.check_circle_outline, size: 24),
+                        const SizedBox(width: 10),
+                        const Text(
+                          'CONFIRM BOOKING',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -504,23 +607,25 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,
-        prefixIcon: Icon(icon, color: Colors.blue.shade600),
+        prefixIcon: Icon(icon, color: Theme.of(context).colorScheme.primary),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey.shade400),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.grey.shade400),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.blue.shade600, width: 2),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
         ),
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        floatingLabelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
       ),
+      style: Theme.of(context).textTheme.bodyLarge,
       validator: validator,
       onTap: onTap,
     );
@@ -536,42 +641,43 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
   }) {
     return DropdownButtonFormField<String>(
       value: value,
-      isExpanded: true, // Add this to prevent overflow
+      isExpanded: true,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: Colors.blue.shade600),
+        prefixIcon: Icon(icon, color: Theme.of(context).colorScheme.primary),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey.shade400),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.grey.shade400),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.blue.shade600, width: 2),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
         ),
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        floatingLabelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
       ),
       items: items.map((item) {
         return DropdownMenuItem(
           value: item,
           child: Text(
             item,
-            style: TextStyle(color: Colors.grey.shade800),
-            overflow: TextOverflow.ellipsis, // Add ellipsis for long text
+            style: Theme.of(context).textTheme.bodyLarge,
+            overflow: TextOverflow.ellipsis,
           ),
         );
       }).toList(),
       onChanged: onChanged,
       validator: validator,
       dropdownColor: Colors.white,
-      icon: Icon(Icons.arrow_drop_down, color: Colors.blue.shade600),
-      borderRadius: BorderRadius.circular(10),
-      style: TextStyle(color: Colors.grey.shade800),
+      icon: Icon(Icons.arrow_drop_down_circle, color: Theme.of(context).colorScheme.primary),
+      borderRadius: BorderRadius.circular(12),
+      style: Theme.of(context).textTheme.bodyLarge,
     );
   }
 }

@@ -13,7 +13,7 @@ class _AdminPendingAppointmentsScreenState extends State<AdminPendingAppointment
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final _searchController = TextEditingController();
   String _searchQuery = '';
-  bool _isLoading = false;
+  final bool _isLoading = false;
   String? _errorMessage;
 
   Future<void> _updateAppointmentStatus(String docId, String status) async {

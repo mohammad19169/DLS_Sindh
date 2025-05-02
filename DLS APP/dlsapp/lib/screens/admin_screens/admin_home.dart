@@ -1,6 +1,7 @@
 import 'package:dlsapp/screens/admin_screens/admin.dart';
 import 'package:dlsapp/screens/admin_screens/admin_license_renewal.dart';
 import 'package:dlsapp/screens/admin_screens/application_status.dart';
+import 'package:dlsapp/screens/admin_screens/license_manager.dart';
 import 'package:dlsapp/screens/admin_screens/pending_appointment.dart';
 import 'package:flutter/material.dart';
 
@@ -53,72 +54,73 @@ class AdminDashboard extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _buildWelcomeCard(context),
-            const SizedBox(height: 16),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 1.0,
-                children: [
-                  _buildDashboardCard(
-                    context,
-                    Icons.schedule,
-                    'Pending Appointments',
-                    const Color(0xFF6A1B9A),
-                    onTap: () {
-                       Navigator.push(
-                         context,
-                         MaterialPageRoute(builder: (context) => const AdminPendingAppointmentsScreen()),
-                       );
-                    },
-                  ),
-                  _buildDashboardCard(
-                    context,
-                    Icons.autorenew,
-                    'Pending Renewals',
-                    const Color(0xFFAB47BC),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AdminRenewalsScreen()),
-                      );
-                    },
-                  ),
-                  _buildDashboardCard(
-                    context,
-                    Icons.list_alt,
-                    'Applications Status',
-                    const Color(0xFF7E57C2),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>  ApplicationStatus()),
-                      );
-                    },
-                  ),
-                  _buildDashboardCard(
-                    context,
-                    Icons.search,
-                    'Search User',
-                    const Color(0xFF9575CD),
-                    onTap: () {
-                      // Uncomment when SearchUserScreen is implemented
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => const SearchUserScreen()),
-                      // );
-                    },
-                  ),
-                ],
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              _buildWelcomeCard(context),
+              const SizedBox(height: 16),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 1.1, // Slightly adjusted for better spacing
+                  children: [
+                    _buildDashboardCard(
+                      context,
+                      Icons.schedule,
+                      'Pending Appointments',
+                      const Color(0xFF6A1B9A),
+                      onTap: () {
+                         Navigator.push(
+                           context,
+                           MaterialPageRoute(builder: (context) => const AdminPendingAppointmentsScreen()),
+                         );
+                      },
+                    ),
+                    _buildDashboardCard(
+                      context,
+                      Icons.autorenew,
+                      'Pending Renewals',
+                      const Color(0xFFAB47BC),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AdminRenewalsScreen()),
+                        );
+                      },
+                    ),
+                    _buildDashboardCard(
+                      context,
+                      Icons.list_alt,
+                      'Applications Status',
+                      const Color(0xFF7E57C2),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>  ApplicationStatus()),
+                        );
+                      },
+                    ),
+                    _buildDashboardCard(
+                      context,
+                      Icons.badge, // Better icon for License Manager
+                      'License Manager',
+                      const Color(0xFF9575CD),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const AdminAddLicenseScreen()),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -151,12 +153,15 @@ class AdminDashboard extends StatelessWidget {
               children: [
                 const Icon(Icons.admin_panel_settings, color: Colors.white, size: 32),
                 const SizedBox(width: 10),
-                const Text(
-                  'Welcome Admin!',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                const Flexible(
+                  child: Text(
+                    'Welcome Admin!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -173,6 +178,8 @@ class AdminDashboard extends StatelessWidget {
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 16,
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                 ),
               ],
@@ -189,6 +196,8 @@ class AdminDashboard extends StatelessWidget {
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 16,
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                 ),
               ],
@@ -231,20 +240,22 @@ class AdminDashboard extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                size: 48,
+                size: 46, // Slightly reduced size
                 color: Colors.white,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12), // Reduced spacing
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
                   title,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 16, // Slightly reduced font size
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                 ),
               ),
             ],

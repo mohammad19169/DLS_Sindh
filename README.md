@@ -37,4 +37,4 @@ The **DLS App** is a Flutter-based mobile application designed to streamline the
    ```bash
    git clone https://github.com/your-username/dls-app.git
    cd dls-app
-   Run flutter pub get
+   flutter pub get

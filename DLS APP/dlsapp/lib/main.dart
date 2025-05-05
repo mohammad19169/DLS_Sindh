@@ -1,5 +1,5 @@
 import 'package:dlsapp/screens/User_screens/signin.dart';
-// import 'package:dlsapp/screens/signup.dart';
+import 'package:dlsapp/screens/User_screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: SignInScreen(),
+      home: SplashScreen(),
     );
   }
 }

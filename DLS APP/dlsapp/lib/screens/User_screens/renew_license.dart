@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
-import 'dart:io';
 
 class LicenseRenewalRequestScreen extends StatefulWidget {
   const LicenseRenewalRequestScreen({super.key});
@@ -23,10 +20,7 @@ class _LicenseRenewalRequestScreenState
   final TextEditingController _issueDateController = TextEditingController();
   final TextEditingController _expiryDateController = TextEditingController();
 
-  File? _cnicFrontImage;
-  File? _cnicBackImage;
   bool _isLoading = false;
-  bool _isUploadingImages = false;
 
   Future<void> _selectDate(BuildContext context, TextEditingController controller) async {
     final DateTime? picked = await showDatePicker(
@@ -40,57 +34,15 @@ class _LicenseRenewalRequestScreenState
     }
   }
 
-  Future<void> _pickImage(bool isFront) async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        if (isFront) {
-          _cnicFrontImage = File(pickedFile.path);
-        } else {
-          _cnicBackImage = File(pickedFile.path);
-        }
-      });
-    }
-  }
-
-  Future<String?> _uploadImage(File image, String path) async {
-    try {
-      final ref = FirebaseStorage.instance.ref().child(path);
-      await ref.putFile(image);
-      return await ref.getDownloadURL();
-    } catch (e) {
-      _showError('Error uploading image: $e');
-      return null;
-    }
-  }
-
   Future<void> _submitRenewalRequest() async {
     if (!_formKey.currentState!.validate()) return;
-    if (_cnicFrontImage == null || _cnicBackImage == null) {
-      _showError('Please upload both CNIC front and back images');
-      return;
-    }
 
     setState(() {
       _isLoading = true;
-      _isUploadingImages = true;
     });
 
     try {
-      // Upload images first
       final cnic = _cnicController.text.trim();
-      final frontUrl = await _uploadImage(_cnicFrontImage!, 'cnic_images/${cnic}_front.jpg');
-      final backUrl = await _uploadImage(_cnicBackImage!, 'cnic_images/${cnic}_back.jpg');
-
-      if (frontUrl == null || backUrl == null) {
-        _showError('Failed to upload CNIC images');
-        return;
-      }
-
-      setState(() => _isUploadingImages = false);
-
       final licenseNumber = _licenseNumberController.text.trim();
       final newExpiryDate = DateTime.now().add(Duration(days: 365 * 5));
       final formattedNewExpiryDate = DateFormat('yyyy-MM-dd').format(newExpiryDate);
@@ -114,15 +66,15 @@ class _LicenseRenewalRequestScreenState
             return;
           } else if (requestStatus == 'Completed') {
             // Proceed with submitting the new request
-            await _processRenewalRequest(licenseDoc, frontUrl, backUrl);
+            await _processRenewalRequest(licenseDoc);
           }
         } else {
           // If no renewal request exists, proceed with creating a new one
-          await _processRenewalRequest(licenseDoc, frontUrl, backUrl);
+          await _processRenewalRequest(licenseDoc);
         }
       } else {
         // Create a new license entry if no record exists
-        await _processRenewalRequest(null, frontUrl, backUrl);
+        await _processRenewalRequest(null);
       }
 
       _showSuccess('Renewal request submitted successfully');
@@ -134,7 +86,7 @@ class _LicenseRenewalRequestScreenState
     }
   }
 
-  Future<void> _processRenewalRequest(DocumentSnapshot? licenseDoc, String frontUrl, String backUrl) async {
+  Future<void> _processRenewalRequest(DocumentSnapshot? licenseDoc) async {
     final cnic = _cnicController.text.trim();
     final licenseNumber = _licenseNumberController.text.trim();
     final newExpiryDate = DateTime.now().add(Duration(days: 365 * 5));
@@ -150,8 +102,6 @@ class _LicenseRenewalRequestScreenState
       'status': 'Pending',
       'requestDate': FieldValue.serverTimestamp(),
       'lastUpdated': FieldValue.serverTimestamp(),
-      'cnicFrontImage': frontUrl,
-      'cnicBackImage': backUrl,
     };
 
     if (licenseDoc != null) {
@@ -197,10 +147,6 @@ class _LicenseRenewalRequestScreenState
     _licenseNumberController.clear();
     _issueDateController.clear();
     _expiryDateController.clear();
-    setState(() {
-      _cnicFrontImage = null;
-      _cnicBackImage = null;
-    });
   }
 
   void _showError(String message) {
@@ -218,71 +164,6 @@ class _LicenseRenewalRequestScreenState
         content: Text(message),
         backgroundColor: Colors.green,
       ),
-    );
-  }
-
-  Widget _buildImageUploadField(String label, bool isFront) {
-    final image = isFront ? _cnicFrontImage : _cnicBackImage;
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.black54,
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-          ),
-        ),
-        SizedBox(height: 8),
-        GestureDetector(
-          onTap: () => _pickImage(isFront),
-          child: Container(
-            height: 150,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: image == null ? Colors.grey.shade300 : Color(0xFF6A1B9A),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 8,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: image == null
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.cloud_upload,
-                          size: 40,
-                          color: Color(0xFF6A1B9A),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Tap to upload',
-                          style: TextStyle(color: Colors.black54),
-                        ),
-                      ],
-                    ),
-                  )
-                : ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.file(
-                      image,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    ),
-                  ),
-          ),
-        ),
-      ],
     );
   }
 
@@ -410,23 +291,6 @@ class _LicenseRenewalRequestScreenState
                     icon: Icons.event_busy,
                     validator: (value) => value?.isEmpty ?? true ? 'Please select expiry date' : null,
                   ),
-                  SizedBox(height: 24),
-                  Text(
-                    'CNIC Images',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Color(0xFF6A1B9A),
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Upload clear images of your CNIC (front and back)',
-                    style: TextStyle(color: Colors.black54),
-                  ),
-                  SizedBox(height: 16),
-                  _buildImageUploadField('CNIC Front Side', true),
-                  SizedBox(height: 16),
-                  _buildImageUploadField('CNIC Back Side', false),
                   SizedBox(height: 32),
                   _buildSubmitButton(),
                 ],
@@ -466,10 +330,7 @@ class _LicenseRenewalRequestScreenState
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (_isUploadingImages)
-                    Text('Uploading Images...')
-                  else
-                    Text('Processing...'),
+                  Text('Processing...'),
                   SizedBox(width: 8),
                   SizedBox(
                     height: 20,

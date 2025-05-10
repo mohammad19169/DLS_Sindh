@@ -1,4 +1,3 @@
-import 'package:dlsapp/screens/User_screens/signin.dart';
 import 'package:dlsapp/screens/User_screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';

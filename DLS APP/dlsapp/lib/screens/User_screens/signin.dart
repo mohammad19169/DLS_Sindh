@@ -46,50 +46,48 @@ Future<void> _signIn() async {
 
     final user = userCredential.user;
 
-    // 2. Check if email is verified
-    if (!user!.emailVerified) {
-      // Store email/password before signing out
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
-      
-      // Offer to resend verification email before signing out
-      bool resend = await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text("Email Not Verified"),
-          content: const Text(
-              "Please verify your email first. Check your inbox or resend the verification email."),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text("Resend Email"),
-            ),
-          ],
-        ),
-      );
+   // 2. Check if email is verified
+await user?.reload(); // reload user state
+if (!_auth.currentUser!.emailVerified) {
+  final email = _emailController.text.trim();
+  final password = _passwordController.text.trim();
 
-      if (resend == true) {
-        // Resend verification while still signed in
-        await user.sendEmailVerification();
-        Fluttertoast.showToast(
-          msg: "Verification email resent! Please check your inbox.",
-          toastLength: Toast.LENGTH_LONG,
-        );
-      }
-      
-      // Sign out after handling verification
-      await _auth.signOut();
-      return;
-    }
+  bool resend = await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text("Email Not Verified"),
+      content: const Text(
+          "Please verify your email first. Check your inbox or resend the verification email."),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text("Cancel"),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text("Resend Email"),
+        ),
+      ],
+    ),
+  );
+
+  if (resend == true) {
+    await _auth.currentUser!.sendEmailVerification(); // get latest user instance
+    Fluttertoast.showToast(
+      msg: "Verification email resent! Please check your inbox.",
+      toastLength: Toast.LENGTH_LONG,
+    );
+  }
+
+  await _auth.signOut();
+  return;
+}
+
 
     // 3. Check admin status (existing code)
     final adminDoc = await _firestore
         .collection('admin_users')
-        .doc(user.uid)
+        .doc(user?.uid)
         .get();
 
     if (adminDoc.exists) {
